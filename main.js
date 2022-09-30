@@ -3,34 +3,42 @@
 const EMPTY_HEART = '♡'
 const FULL_HEART = '♥'
 
-const likeHearts = document.querySelectorAll('.like-glyph');
-const errorModal = document.querySelector('#modal');
-errorModal.className = "hidden";
-
-likeHearts.forEach(heart => heart.addEventListener('click', callback));
-
-function callback(e) {
-  mimicServerCall()
-  .then(data => { // this runs when it's sucessful
-    const heartSpan = e.target;
-    let heartState = heartSpan.textContent; 
-  
-    if(heartState == EMPTY_HEART) {
-      e.target.textContent = FULL_HEART;
-      e.target.className = "activated-heart";
-    } else {
-      e.target.textContent = EMPTY_HEART;
-      e.target.className = "";
-    };
-  })
-  .catch(error => {
-    errorModal.className = "";
-    errorModal.innerText = error;
-    setTimeout(() => {errorModal.className = "hidden"}, 3000);
-
-  })
-  
+const errorMsg = document.getElementById('modal');
+const addHiddenClass = () => {
+  errorMsg.className = 'hidden';
 }
+addHiddenClass();
+
+
+const hearts = document.querySelectorAll('.like-glyph')
+
+hearts.forEach(heart => heart.addEventListener('click', clickHeart))
+
+function clickHeart(e) {
+  mimicServerCall()
+  .then(data => thenFun(data))
+  .catch(error => errorNotification(error))
+
+  const thenFun = data => {
+    const heartSpan = e.target;
+    const heartState = heartSpan.textContent;
+
+    if(heartState == EMPTY_HEART) {
+      heartSpan.textContent = FULL_HEART;
+      heartSpan.className = 'activated-heart';
+    } else {
+      heartSpan.textContent = EMPTY_HEART;
+      heartSpan.className = '';
+    }
+  }
+
+  const errorNotification = error => {
+    errorMsg.textContent = error;
+    errorMsg.className = '';
+    setTimeout(() => addHiddenClass(), 3000);
+  }
+}
+
 
 // ------------------------------------------------------------------------------
 // Don't change the code below: this function mocks the server response
@@ -52,7 +60,25 @@ function mimicServerCall(url="http://mimicServer.example.com", config={}) {
 
 
 
+/*
+
+When you wrote your instructions..
+i recommend focusing on broad common patterns, as opposed to "it was done this one time like this, specifically"
+
+Clicking on the heart should change the heart symbol
+I need to selert the heart elem
 
 
-// locate the elements i want to add click events to
-// <span class="like-glyph">♡</span> - the heart 
+
+...
+
+...
+
+...
+
+...
+
+...
+
+...
+*/
